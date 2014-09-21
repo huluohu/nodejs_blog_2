@@ -9,6 +9,9 @@ var express = require('express')
   , http = require('http')
   , path = require('path');
 
+var MongoStore = requre('connect-mongo')(express);
+var settings = requre('./settings');
+
 var app = express();
 
 // all environments
@@ -35,6 +38,16 @@ app.use(express.logger('dev'));
 app.use(express.bodyParser());
 //协助处理POST请求，伪装成PUT、DELETE等
 app.use(express.methodOverride());
+
+//cookie解析中间件
+app.use(express.cookieParser());
+//设置会话支持
+app.use(express.session({
+	secret : settings.cookieSecret,
+	key : settings.db,//cookie name
+	cookie : {maxAge : 1000 * 60 * 60 * 24 * 30},//30days
+	store : new MongoStore({db : settings.db})//会话信息存储在db中
+}));
 
 //调用路由解析规则，一般注册其他的
 app.use(app.router);
