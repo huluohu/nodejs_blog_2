@@ -3,7 +3,7 @@
  */
 
 var settings = require('../settings')
-	,Db = require('momgodb').Db
+	,Db = require('mongodb').Db
 	,Connection = require('mongodb').Connection
 	,Server = require('mongodb').Server;
 //创建并导出数据库连接实例

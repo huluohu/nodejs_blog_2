@@ -9,11 +9,13 @@ var express = require('express')
   , http = require('http')
   , path = require('path');
 
-var MongoStore = requre('connect-mongo')(express);
-var settings = requre('./settings');
+var MongoStore = require('connect-mongo')(express);
+var settings = require('./settings');
+var flash = require('connect-flash');
 
 var app = express();
 
+app.use(flash());
 // all environments
 app.set('port', process.env.PORT || 3000);
 app.set('views', __dirname + '/views');
@@ -64,6 +66,7 @@ if ('development' == app.get('env')) {
 
 http.createServer(app).listen(app.get('port'), function(){
   console.log('Express server listening on port ' + app.get('port'));
+  console.log('哈哈哈，不错吧！');
 });
 //将路由控制和实现都放在index.js中
 routes(app);
