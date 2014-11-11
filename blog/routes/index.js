@@ -1,5 +1,7 @@
 var crypto = require('crypto'),
-User = require('../models/user.js');
+User = require('../models/user.js'),
+Post = require('../models/post.js');
+
 module.exports = function(app){
 //	app.get('/',function(req,res){
 //		res.render('index',{title:'我是谁?'});
@@ -18,11 +20,17 @@ module.exports = function(app){
 		res.render('index',{title:'book name is '+ name + ', price is ' + price});
 	});
 	app.get('/',function(req,res){
-		res.render('index',{
-			title : '主页',
-			user : req.session.user,
-			success : req.flash('success').toString(),
-			error : req.flash('error').toString()
+		Post.get(null,function(err,posts){
+			if(err){
+				posts = [];
+			}
+			res.render('index',{
+				title : '主页',
+				user : req.session.user,
+				success : req.flash('success').toString(),
+				error : req.flash('error').toString(),
+				posts : posts
+			});
 		});
 	});
 	
@@ -98,11 +106,28 @@ module.exports = function(app){
 		});
 	});
 	
+	app.get('post',checkLogin);
 	app.get('/post',function(req,res){
-		res.render('post',{title:'发表'});
+		res.render('post',{
+			title:'发表',
+			user : req.session.user,
+			success : req.flash('success').toString(),
+			error : req.flash('error').toString()
+		});
 	});
+	
+	app.get('post',checkLogin);
 	app.post('/post',function(req,res){
-		
+		var currentUser = req.session.user,
+			post = new Post(currentUser.name, req.body.title, req.body.post);
+		post.save(function(err){
+			if(err){
+				req.flash('error',err);
+				return res.redirect('/');
+			}
+			req.flash('success','发表成功');
+			res.redirect('/');
+		});
 	});
 	
 	app.get('/logout',function(req,res){
