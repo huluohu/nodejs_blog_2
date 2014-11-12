@@ -37,7 +37,7 @@ app.use(express.logger('dev'));
 //app.use(express.urlencoded());
 //appuse(express.multipart());
 //-----------//
-app.use(express.bodyParser());
+app.use(express.bodyParser({keepExtensions:true,uploadDir:'./public/upload'}));
 //协助处理POST请求，伪装成PUT、DELETE等
 app.use(express.methodOverride());
 
