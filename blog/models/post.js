@@ -126,7 +126,7 @@ Post.edit = function(name,day,title,callback){
 					return callback(err);
 				}
 				callback(null,doc);
-				console.log('success edit...');
+//				console.log('success edit...');
 			});
 		});
 	});
