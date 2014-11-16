@@ -106,7 +106,8 @@ Post.getOne = function(name,day,title,callback){
 	});
 };
 
-Post.edit = function(name,day,title,callback){
+//根据用户名、日期和文章名查询文章，返回markdown格式
+Post.getInMarkdown = function(name,day,title,callback){
 	mongodb.open(function(err,db){
 		if(err){
 			return callback(err);
@@ -125,8 +126,63 @@ Post.edit = function(name,day,title,callback){
 				if(err){
 					return callback(err);
 				}
+				console.log('doc>'+doc);
 				callback(null,doc);
-				console.log('success edit...');
+			});
+		});
+	});
+};
+
+Post.update = function(name,day,title,post,callback){
+	mongodb.open(function(err,db){
+		if(err){
+			return callback(err);
+		}
+		db.collection('posts',function(err,collection){
+			if(err){
+				mongodb.close();
+				return callback(err);
+			}
+			collection.update({
+				'name' : name,
+				'time.day' : day,
+				'title' : title
+			},{
+				$set : {post : post}
+			},
+			function(err){
+				mongodb.close();
+				if(err){
+					return callback(err);
+				}
+				callback(null);
+			});
+		});
+	});
+};
+
+Post.remove = function(name,day,title,callback){
+	mongodb.open(function(err,db){
+		if(err){
+			return callback(err);
+		}
+		db.collection('posts',function(err,collection){
+			if(err){
+				mongodb.close();
+				return callback(err);
+			}
+			collection.remove({
+				'name' : name,
+				'time.day' : day,
+				'title' :title
+			},{
+				w : 1
+			},function(err){
+				mongodb.close();
+				if(err){
+					return callback(err);
+				}
+				callback(null);
 			});
 		});
 	});
