@@ -1,0 +1,29 @@
+<br />
+<header>
+	<h3 style="color: green;">留言板</h3>
+</header>
+<br />
+<% post.comments.forEach(function(comment,index){ %>
+	<p>
+		<a href="<%=comment.website %>"><%=comment.name %></a>
+		<span class="info">回复于：<%=comment.time %></span>
+	</p>
+	<p><%- comment.content %></p>
+<% }) %>
+<header>
+	<h3 style="color: red;">我要留言</h3>
+</header>
+<br />
+<form method="post">
+<% if(user){ %>
+	姓名：<input name="name" value="<%= user.name %>"><br />
+	邮箱：<input name="email" value="<%= user.email %>"><br />
+	网址：<input name="website" value="/u/<%= user.name %>"><br />
+<% }else { %>
+	姓名：<input name="name"><br />
+	邮箱：<input name="email"><br />
+	网址：<input name="website" value="http://"><br />
+<% } %>
+<textarea rows="5" cols="80" name="content"></textarea><br />
+<input type="submit" value="留言">
+</form>

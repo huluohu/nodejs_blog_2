@@ -137,6 +137,7 @@ Post.getInMarkdown = function(name,day,title,callback){
 	});
 };
 
+//修改blog内容
 Post.update = function(name,day,title,post,callback){
 	mongodb.open(function(err,db){
 		if(err){
@@ -165,6 +166,7 @@ Post.update = function(name,day,title,post,callback){
 	});
 };
 
+//删除一篇blog
 Post.remove = function(name,day,title,callback){
 	mongodb.open(function(err,db){
 		if(err){
@@ -187,6 +189,75 @@ Post.remove = function(name,day,title,callback){
 					return callback(err);
 				}
 				callback(null);
+			});
+		});
+	});
+};
+
+//分页查询
+Post.getByPaging = function(name,page,callback){
+	mongodb.open(function(err,db){
+		if(err){
+			return callback(err);
+		}
+		db.collection('posts',function(err,collection){
+			if(err){
+				mongodb.close();
+				return callback(err);
+			}
+			var query = {};
+			if(name){
+				query.name = name;
+			}
+			//查询文档数量
+			collection.count(query,function(err,total){
+				if(err){
+					mongodb.close();
+					return callback(err);
+				}
+				collection.find(query,{
+					skip : (page - 1) * 10,//跳过前面的
+					limit : 10//每页10条
+				}).sort({
+					time : -1//倒序
+				}).toArray(function(err,docs){
+					mongodb.close();
+					if(err){
+						return callback(err);
+					}
+					docs.forEach(function(doc,index){
+						doc.post = markdown.toHTML(doc.post);
+					});
+					callback(null,docs,total);
+				});
+			});
+		});
+	});
+};
+
+Post.getAllArchive = function(callback){
+	mongodb.open(function(err,db){
+		if(err){
+			return callback(err);
+		}
+		db.collection('posts',function(err,collection){
+			if(err){
+				mongodb.close();
+				return callback(err);
+			}
+			//返回只包含name、time和title属性的文档
+			collection.find({},{
+				'name' : 1,
+				'time' : 1,
+				'title' : 1
+			}).sort({
+				time : -1
+			}).toArray(function(err,docs){
+				mongodb.close();
+				if(err){
+					return callback(err);
+				}
+				callback(null,docs);
 			});
 		});
 	});
