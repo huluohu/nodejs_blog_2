@@ -18,6 +18,9 @@
 		<% } %>
 	</p>
 	<p><%- post.post %></p>
+	<p class="info">
+		阅读：<%=post.pv==null ? 0 :post.pv %> | 评论：<%=post.comments.length %>
+	</p>
 <% }) %>
 <%- include paging.html %>
 <%- include footer.html %>

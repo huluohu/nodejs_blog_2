@@ -208,6 +208,42 @@ module.exports = function(app) {
 			});
 		});
 	});
+	
+	//到标签页
+	app.get('/tags',function(req,res){
+		Post.getTags(function(err,posts){
+			if(err){
+				console.log('err1======'+err);
+				req.flash('error',err);
+				return res.redirect('/');
+			}
+			res.render('tags',{
+				title : '标签',
+				posts : posts,
+				user : req.session.user,
+				success : req.flash('success').toString(),
+				error : req.flash('error').toString()
+			});
+		});
+	});
+	
+	//到指定tag的文章页
+	app.get('/tags/:tag',function(req,res){
+		var tag = req.params.tag;
+		Post.getTag(tag,function(err,posts){
+			if(err){
+				req.flash('error',err);
+				return res.redirect('back');
+			}
+			res.render('tag',{
+				title : 'TAG:' + tag,
+				posts : posts,
+				user : req.session.user,
+				success : req.flash('success').toString(),
+				error : req.flash('error').toString()
+			});
+		});
+	});
 
 	app.get('/u/:name', function(req, res) {
 		var page = req.query.p ? parseInt(req.query.p) : 1;
@@ -252,7 +288,7 @@ module.exports = function(app) {
 
 	//根据用户名、日期和标题查询一个文章
 	app.get('/u/:name/:day/:title', function(req, res) {
-		Post.getOne(req.params.name, req.params.day, req.params.title,
+		Post.getOneInHtml(req.params.name, req.params.day, req.params.title,
 				function(err, post) {
 					if (err) {
 						req.flash('error', err);

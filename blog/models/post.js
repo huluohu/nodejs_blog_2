@@ -31,7 +31,8 @@ Post.prototype.save = function(callback){
 			title : this.title,
 			tags : this.tags,
 			post : this.post,
-			comments : []
+			comments : [],
+			pv : 0
 	};
 	mongodb.open(function(err,db){
 		if(err){
@@ -81,7 +82,7 @@ Post.getAll = function(name,callback){
 	});
 };
 //根据用户名、发布日期和文章名获取一篇文章
-Post.getOne = function(name,day,title,callback){
+Post.getOneInHtml = function(name,day,title,callback){
 	mongodb.open(function(err,db){
 		if(err){
 			return callback(err);
@@ -98,15 +99,30 @@ Post.getOne = function(name,day,title,callback){
 				'time.day' : day,
 				'title' : title
 			},function(err,doc){
-				mongodb.close();
 				if(err){
+					mongodb.close();
 					return callback(err);
 				}
-				doc.post = markdown.toHTML(doc.post);
-				doc.comments.forEach(function(comment){
-					comment.content = markdown.toHTML(comment.content);
-				});
-				callback(null,doc);
+				if(doc){
+					//没访问1次，pv增加1
+					collection.update({
+						'name' : name,
+						'time.day' : day,
+						'title' : title
+					},{
+						$inc : {'pv' : 1}
+					},function(err){
+						mongodb.close();
+						if(err){
+							return callback(err);
+						}
+					});
+					doc.post = markdown.toHTML(doc.post);
+					doc.comments.forEach(function(comment){
+						comment.content = markdown.toHTML(comment.content);
+					});
+					callback(null,doc);
+				}
 			});
 		});
 	});
@@ -249,6 +265,60 @@ Post.getAllArchive = function(callback){
 			}
 			//返回只包含name、time和title属性的文档
 			collection.find({},{
+				'name' : 1,
+				'time' : 1,
+				'title' : 1
+			}).sort({
+				time : -1
+			}).toArray(function(err,docs){
+				mongodb.close();
+				if(err){
+					return callback(err);
+				}
+				callback(null,docs);
+			});
+		});
+	});
+};
+//获取所有标签
+Post.getTags = function(callback){
+	mongodb.open(function(err,db){
+		if(err){
+			console.log('err4======'+err);
+			return callback(err);
+		}
+		db.collection('posts',function(err,collection){
+			if(err){
+				console.log('err3======'+err);
+				mongodb.close();
+				return callback(err);
+			}
+			collection.distinct('tags',function(err,docs){
+				mongodb.close();
+				if(err){
+					console.log('err2======'+err);
+					return callback(err);
+				}
+				callback(null,docs);
+			});
+		});
+	});
+};
+
+Post.getTag = function(tag,callback){
+	mongodb.open(function(err,db){
+		if(err){
+			return callback(err);
+		}
+		db.collection('posts',function(err,collection){
+			if(err){
+				mongodb.close();
+				return callback(err);
+			}
+			//查询所有tags数组内包含tag的文档，并返回只含有name,time,title的文档
+			collection.find({
+				tags : tag
+			},{
 				'name' : 1,
 				'time' : 1,
 				'title' : 1
