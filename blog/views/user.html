@@ -1,5 +1,6 @@
 <%- include header.html %>
 <% posts.forEach(function(post,index){ %>
+	<div class="article_thread">
 	<p>
 		<h2>
 			<a href="/u/<%=post.name %>/<%=post.time.day %>/<%=post.title %>"><%=post.title %></a>
@@ -21,6 +22,7 @@
 	<p class="info">
 		阅读：<%=post.pv==null ? 0 :post.pv %> | 评论：<%=post.comments.length %>
 	</p>
+	</div>
 <% }) %>
 <%- include paging.html %>
 <%- include footer.html %>
