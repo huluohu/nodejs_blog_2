@@ -14,8 +14,8 @@
 		<% }) %>
 		<% } %>
 	</p>
-	<p><%- post.post %></p>
-	<p class="info">
+	<div class="post"><%- post.post %></div>
+	<p class="info" >
 		阅读：<%=post.pv==null ? 0 :post.pv %> | 评论：<%=post.comments.length %>
 	</p>
 	</div>
