@@ -4,11 +4,14 @@
 </header>
 <br />
 <% post.comments.forEach(function(comment,index){ %>
-	<p>
-		<a href="<%=comment.website %>"><%=comment.name %></a>
-		<span class="info">回复于：<%=comment.time %></span>
-	</p>
-	<p><%- comment.content %></p>
+	<div style="padding-left: 4em;">
+		<p>
+			<img alt="head" src="<%=comment.head %>" class="l_head">
+			<a href="<%=comment.website %>"><%=comment.name %></a>
+			<span class="info">回复于：<%=comment.time %></span>
+		</p>
+		<p><%- comment.content %></p>
+	</div>
 <% }) %>
 <header>
 	<h3 style="color: red;">我要留言</h3>

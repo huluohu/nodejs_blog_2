@@ -333,8 +333,12 @@ module.exports = function(app) {
 	app.post('/u/:name/:day/:title', function(req, res) {
 		var date = new Date();
 		var time = date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate() + ' ' + date.getHours() + ":" + (date.getMinutes() < 10 ? '0' + date.getMinutes() : date.getMinutes() );
+		var md5 = crypto.createHash('md5');
+		var emailMd5 = md5.update(req.body.email.toLowerCase()).digest('hex');
+		var head = "http://www.gravatar.com/avatar/"+ emailMd5 + "?s=48";
 		var comment = {
 				name : req.body.name,
+				head : head,
 				email : req.body.email,
 				website : req.body.website,
 				time : time,

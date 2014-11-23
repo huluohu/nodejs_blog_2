@@ -145,3 +145,19 @@ article a:HOVER {
 	font-size: 1em;
 	margin: 0.5em 0;
 }
+.r_head{
+	float: left;
+	margin-left: 0.1em;
+	box-shadow: 0px 1px 4px #888;
+	border: 1px solid gray;
+	width: 30px;
+	height: 30px;
+}
+.l_head{
+	float: left;
+	margin-left: -2.5em;
+	box-shadow: 0px 1px 4px #888;
+	border: 1px solid gray;
+	width: 30px;
+	height: 30px;
+}

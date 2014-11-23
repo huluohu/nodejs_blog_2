@@ -124,6 +124,8 @@ Post.getOneInHtml = function(name,day,title,callback){
 						comment.content = markdown.toHTML(comment.content);
 					});
 					callback(null,doc);
+				}else{
+					mongodb.close();
 				}
 			});
 		});
