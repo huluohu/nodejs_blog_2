@@ -1,7 +1,8 @@
 /**
- * New node file
+ * user 模型
  */
 var mongodb = require('./db');
+var crypto = require('crypto');
 function User(user){
 	this.name = user.name;
 	this.password = user.password;
@@ -13,10 +14,14 @@ module.exports = User;
  * @param callback
  */
 User.prototype.save = function(callback){
+	var md5 = crypto.creatrHash('md5');
+	var emailMd5 = md5.update(this.email.toLowerCase()).digest('hex');
+	var head = "http://www.gravatar.com/avatar/"+ emailMd5 + "?s=48";
 	var user = {
 			name	:	this.name,
 			password	:	this.password,
-			email	:	this.email
+			email	:	this.email,
+			head	:	head
 	};
 	mongodb.open(function(err,db){
 		if(err){

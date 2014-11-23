@@ -149,7 +149,7 @@ module.exports = function(app) {
 	app.post('/post', function(req, res) {
 		var currentUser = req.session.user;
 		var tags = [req.body.tag1,req.body.tag2,req.body.tag3];
-		var post = new Post(currentUser.name,req.body.title, tags,req.body.post);
+		var post = new Post(currentUser.name,currentUser.head,req.body.title, tags,req.body.post);
 		post.save(function(err) {
 			if (err) {
 				req.flash('error', err);
@@ -237,6 +237,32 @@ module.exports = function(app) {
 			}
 			res.render('tag',{
 				title : 'TAG:' + tag,
+				posts : posts,
+				user : req.session.user,
+				success : req.flash('success').toString(),
+				error : req.flash('error').toString()
+			});
+		});
+	});
+	
+	app.get('/links',function(req,res){
+		res.render('links',{
+			title : '友情链接',
+			user : req.session.user,
+			success : req.flash('success').toString(),
+			error : req.flash('error').toString()
+		});
+	});
+	
+	app.get('/search',function(req,res){
+		var keyword = req.query.keyword;
+		Post.search(keyword,function(err,posts){
+			if(err){
+				req.flash('error',error);
+				return callback('/');
+			}
+			res.render('search',{
+				title : 'SEARCH:' + keyword,
 				posts : posts,
 				user : req.session.user,
 				success : req.flash('success').toString(),
@@ -381,7 +407,14 @@ module.exports = function(app) {
 			res.redirect('/');
 		});
 	});
-	
+	app.use(function(req,res){
+		res.render('404',{
+			title : '呀，迷路了...',
+			user : req.session.user,
+			success : req.flash('success').toString(),
+			error : req.flash('error').toString()
+		});
+	});
 	function checkLogin(req, res, next) {
 		if (!req.session.user) {
 			req.flash('error', '未登录');
