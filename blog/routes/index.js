@@ -335,7 +335,7 @@ module.exports = function(app) {
 		var time = date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate() + ' ' + date.getHours() + ":" + (date.getMinutes() < 10 ? '0' + date.getMinutes() : date.getMinutes() );
 		var md5 = crypto.createHash('md5');
 		var emailMd5 = md5.update(req.body.email.toLowerCase()).digest('hex');
-		var head = "http://www.gravatar.com/avatar/"+ emailMd5 + "?s=48";
+		var head = "http://www.gravatar.com/avatar/"+ emailMd5 + ".json";
 		var comment = {
 				name : req.body.name,
 				head : head,
