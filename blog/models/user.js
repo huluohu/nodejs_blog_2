@@ -16,7 +16,7 @@ module.exports = User;
 User.prototype.save = function(callback){
 	var md5 = crypto.createHash('md5');
 	var emailMd5 = md5.update(this.email.toLowerCase()).digest('hex');
-	var head = "http://www.gravatar.com/avatar/"+ emailMd5 + "?s=48";
+	var head = "http://www.gravatar.com/avatar/"+ emailMd5 + ".json";
 	var user = {
 			name	:	this.name,
 			password	:	this.password,
