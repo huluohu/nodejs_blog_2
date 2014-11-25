@@ -48,7 +48,14 @@
 	</p>
 	<p><%- post.post %></p>
 	<p class="info">
-		阅读：<%=post.pv==null ? 0 :post.pv %> | 评论：<%=post.comments.length %>
+		阅读：<%=post.pv==null ? 0 :post.pv %> | 
+		评论：<%=post.comments.length %> |
+		转载：
+		<% if(post.reprint_info && post.reprint_info.reprint_to){ %>
+			<%=post.reprint_info.reprint_to.length %>
+		<% }else{ %>
+			0
+		<% } %>
 	</p>
 	</div>
 <%- include comment.html %>
