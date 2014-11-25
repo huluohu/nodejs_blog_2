@@ -12,6 +12,9 @@ var express = require('express')
 var MongoStore = require('connect-mongo')(express);
 var settings = require('./settings');
 var flash = require('connect-flash');
+var fs = require('fs');
+var accessLog = fs.createWriteStream('access.log',{flag : 'a'});
+var errorLog = fs.createWriteStream('error.log',{flag : 'a'});
 
 var app = express();
 
@@ -30,6 +33,8 @@ app.set('view engine', 'html');
 app.use(express.favicon(path.join(__dirname,'/public/images/favicon.ico')));
 //可以在console中输出简单log
 app.use(express.logger('dev'));
+//将访问日志输出到文件
+app.use(express.logger({stream : accessLog}));
 //用于解析request
 //app.use(express.bodyParser())相当于以下代码
 //-----------//
@@ -55,6 +60,12 @@ app.use(express.session({
 app.use(app.router);
 //设置静态文件的目录
 app.use(express.static(path.join(__dirname, 'public')));
+
+app.use(function(err,req,res,next){
+	var meta = '[' + new Date() + ']' + req.url + '\n';
+	errorLog.write(meta + err.stack + '\n');
+	next();
+});
 
 // development only
 if ('development' == app.get('env')) {
