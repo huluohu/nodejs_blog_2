@@ -18,6 +18,9 @@ var errorLog = fs.createWriteStream('error.log',{flag : 'a'});
 
 var app = express();
 
+var passport = require('passport');
+var GitHubStrategy = require('passport-github').Strategy;
+
 app.use(flash());
 // all environments
 app.set('port', process.env.PORT || 3000);
@@ -56,6 +59,9 @@ app.use(express.session({
 	store : new MongoStore({db : settings.db})//会话信息存储在db中
 }));
 
+//初始化passport
+app.use(passport.initialize());
+
 //调用路由解析规则，一般注册其他的
 app.use(app.router);
 //设置静态文件的目录
@@ -66,6 +72,14 @@ app.use(function(err,req,res,next){
 	errorLog.write(meta + err.stack + '\n');
 	next();
 });
+//设置passport策略
+passport.use(new GitHubStrategy({
+	clientID : 'd509b16757dade90cc47',
+	clientSecret : "07dc0aa575db4bfa1045c9f99cb27991d088b4df",
+	callbackURL : 'http://localhost:3000/login/github/callback'
+},function(accessToken,refreshToken,profile,done){
+	done(null,profile);
+}));
 
 // development only
 if ('development' == app.get('env')) {

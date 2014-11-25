@@ -11,6 +11,9 @@
     "mongodb" : "*",
     "connect-mongo" : "*",
     "connect-flash" : "*",
-    "markdown" : "*"
+    "markdown" : "*",
+    "passport" : "*",
+    "passport-github" : "*",
+    "mongoose" : "*"
   }
 }

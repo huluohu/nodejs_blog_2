@@ -3,6 +3,7 @@ var fs = require('fs');
 var User = require('../models/user.js');
 var Post = require('../models/post.js');
 var Comment = require('../models/comment.js');
+var passport = require('passport');
 
 module.exports = function(app) {
 	// app.get('/',function(req,res){
@@ -72,39 +73,36 @@ module.exports = function(app) {
 		});
 	});
 	app.get('/reg', checkNotLogin);
-	app
-			.post(
-					'/reg',
-					function(req, res) {
-						var name = req.body.name, password = req.body.password, password_repeat = req.body['password-repeat'];
-						if (password_repeat !== password) {
-							req.flash('error', '两次输入的密码不一致');
-							return res.redirect('/reg');
-						}
-						var md5 = crypto.createHash('md5');
-						password = md5.update(password).digest('hex');
-						var email = req.body.email;
-						var newUser = new User({
-							name : name,
-							password : password,
-							email : email
-						});
-						User.get(newUser.name, function(err, user) {
-							if (user) {
-								req.flash('error', '用户已存在。');
-								return res.redirect('/reg');
-							}
-							newUser.save(function(err, user) {
-								if (err) {
-									req.flash('error', err);
-									return res.redirect('/reg');
-								}
-								req.session.user = user;
-								req.flash('success', '注册成功');
-								res.redirect('/');
-							});
-						});
-					});
+	app.post('/reg',function(req, res) {
+		var name = req.body.name, password = req.body.password, password_repeat = req.body['password-repeat'];
+		if (password_repeat !== password) {
+			req.flash('error', '两次输入的密码不一致');
+			return res.redirect('/reg');
+		}
+		var md5 = crypto.createHash('md5');
+		password = md5.update(password).digest('hex');
+		var email = req.body.email;
+		var newUser = new User({
+			name : name,
+			password : password,
+			email : email
+		});
+		User.get_v2(newUser.name, function(err, user) {
+			if (user) {
+				req.flash('error', '用户已存在。');
+				return res.redirect('/reg');
+			}
+			newUser.save_v2(function(err, user) {
+				if (err) {
+					req.flash('error', err);
+					return res.redirect('/reg');
+				}
+				req.session.user = user;
+				req.flash('success', '注册成功');
+				res.redirect('/');
+			});
+		});
+	});
 	app.get('/login', checkNotLogin);
 	app.get('/login', function(req, res) {
 		res.render('login', {
@@ -114,13 +112,28 @@ module.exports = function(app) {
 			error : req.flash('error').toString()
 		});
 	});
+	
+	//使用github登陆
+	app.get('/login/github',passport.authenticate('github',{session:false}));
+	app.get('/login/github/callback',passport.authenticate('github',{
+		session : false,
+		failureRedirect : '/login',
+		successFlash : '登陆成功'
+	}),function(req,res){
+		req.session.user = {
+				name : req.user.username,
+				head : 'https://gravatar.com/avatar/' + req.user._json.gravatar_id + '?s=48'
+		};
+		res.redirect('/');
+	});
+	
 	app.get('/login', checkNotLogin);
 	app.post('/login', function(req, res) {
 		var md5 = crypto.createHash('md5');
 		var password = req.body.password;
 		password = md5.update(password).digest('hex');
 		var name = req.body.name;
-		User.get(name, function(err, user) {
+		User.get_v2(name, function(err, user) {
 			if (!user) {
 				req.flash('error', '用户不存在');
 				res.redirect('/login');
@@ -273,7 +286,7 @@ module.exports = function(app) {
 
 	app.get('/u/:name', function(req, res) {
 		var page = req.query.p ? parseInt(req.query.p) : 1;
-		User.get(req.params.name, function(err, user) {
+		User.get_v2(req.params.name, function(err, user) {
 			if (!user) {
 				req.flash('error', '用户不存在！');
 				return res.redirect('/');
