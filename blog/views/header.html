@@ -7,11 +7,7 @@
 </head>
 <body>
 	<header>
-		<h1><%=title %>
-			<% if(user){ %>
-				|<%=user.name %>
-			<% } %>
-		</h1>
+		<h1><%=title %></h1>
 	</header>
 	<nav>
 		<span><a title="主页" href="/">home</a></span>
@@ -21,7 +17,15 @@
 		<% if(user) { %>
 		<span><a title="上传" href="/upload">upload</a></span>
 		<span><a title="发表" href="/post">post</a></span>
-		<span><a title="登出" href="/logout">logout</a></span>
+		<span><a title="登出" href="/logout">logout
+			<% if(user){ %>
+				<% if(user.name.length > 4){ %>
+					(<%=user.name.substr(0,4) %>)
+				<% }else{ %>
+					(<%=user.name %>)
+				<% } %>
+			<% } %>
+		</a></span>
 		<% } else { %>
 		<span><a title="登录" href="/login">login</a></span>
 		<span><a title="注册" href="/reg">reg</a></span>
