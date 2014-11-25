@@ -318,6 +318,7 @@ module.exports = function(app) {
 				function(err, post) {
 					if (err) {
 						req.flash('error', err);
+						console.log('/u/=========' + err);
 						return res.redirect('/');
 					}
 					res.render('article', {
@@ -355,6 +356,7 @@ module.exports = function(app) {
 		});
 	});
 	app.get('/edit/:name/:day/:title', checkLogin);
+	//编辑文章
 	app.get('/edit/:name/:day/:title', function(req, res) {
 		console.log('day>'+req.params.day);
 		console.log('title>'+req.params.title);
@@ -411,9 +413,38 @@ module.exports = function(app) {
 			res.redirect('/');
 		});
 	});
+	
+	app.get('/reprint/:name/:day/:title',checkLogin);
+	app.get('/reprint/:name/:day/:title',function(req,res){
+		Post.getInMarkdown(req.params.name, req.params.day, req.params.title, function(err,post){
+			if(err){
+				req.flash('error',err);
+				return res.redirect('back');
+			}
+			var currentUser = req.session.user;
+			var reprint_from = {
+					name : post.name,
+					day : post.time.day,
+					title : post.title
+			};
+			var reprint_to = {
+					name : currentUser.name,
+					head : currentUser.head
+			};
+			Post.reprint(reprint_from,reprint_to,function(err,post){
+				if(err){
+					req.flash('error',err);
+					return res.redirect('back');
+				}
+				req.flash('success','转载成功');
+				var url = '/u/' + post.name + '/' + post.time.day + '/' + post.title;
+				res.redirect(url);
+			});
+		});
+	});
 	app.use(function(req,res){
 		res.render('404',{
-			title : '呀，迷路了...',
+			title : '哎呀，迷路了*__*',
 			user : req.session.user,
 			success : req.flash('success').toString(),
 			error : req.flash('error').toString()
