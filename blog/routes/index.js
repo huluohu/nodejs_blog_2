@@ -455,6 +455,60 @@ module.exports = function(app) {
 			});
 		});
 	});
+	
+	app.get('/test',function(req,res){
+		res.render('test/test',{
+			title : 'Test Page',
+			user : req.session.user,
+			success : req.flash('success').toString(),
+			error : req.flash('error').toString()
+		});
+	});
+	app.get('/test/:action',function(req,res){
+		if('async' == req.params.action){
+			res.render('test/reg',{
+				title : '测试async-reg',
+				user : req.session.user,
+				success : req.flash('success').toString(),
+				error : req.flash('error').toString()
+			});
+		}else{
+			res.redirect('/');
+		}
+	});
+	
+	app.post('/test/:action',function(req,res){
+		console.log('into test.actions===========');
+		if('reg' == req.params.action){
+			console.log('into test.reg===========');
+			var name = req.body.name, password = req.body.password, password_repeat = req.body['password-repeat'];
+			if (password_repeat !== password) {
+				req.flash('error', '两次输入的密码不一致');
+				return res.redirect('/test/reg');
+			}
+			var md5 = crypto.createHash('md5');
+			password = md5.update(password).digest('hex');
+			var email = req.body.email;
+			var newUser = new User({
+				name : name,
+				password : password,
+				email : email
+			}); 
+			newUser.saveAsync(function(err,user){
+				if (err) {
+					console.log('test.reg========='+err);
+					req.flash('error', err);
+					return res.redirect('/test/reg');
+				}
+				req.session.user = user;
+				req.flash('success', '注册成功');
+				res.redirect('/');
+			});
+		}else{
+			res.redirect('/');
+		}
+	});
+	
 	app.use(function(req,res){
 		res.render('404',{
 			title : '哎呀，迷路了*__*',
