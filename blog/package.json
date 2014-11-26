@@ -14,6 +14,7 @@
     "markdown" : "*",
     "passport" : "*",
     "passport-github" : "*",
-    "mongoose" : "*"
+    "mongoose" : "*",
+    "async" : "*"
   }
 }
