@@ -15,6 +15,8 @@
     "passport" : "*",
     "passport-github" : "*",
     "mongoose" : "*",
-    "async" : "*"
+    "async" : "*",
+    "express4-handlebars" : "*",
+    "express3-handlebars" : "*"
   }
 }

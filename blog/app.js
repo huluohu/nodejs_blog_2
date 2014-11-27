@@ -22,14 +22,30 @@ var app = express();
 var passport = require('passport');
 var GitHubStrategy = require('passport-github').Strategy;
 
+var exphbs = require('express3-handlebars');
+
 app.use(flash());
 // all environments
 app.set('port', process.env.PORT || 3000);
 app.set('views', __dirname + '/views');
 //使用ejs模板，并修改扩展名为html
-app.engine('.html',require('ejs').renderFile);
-app.set('view engine', 'html');
+//app.engine('.html',require('ejs').renderFile);
+//app.set('view engine', 'html');
+
 //app.set('view engine', 'ejs');
+
+//设置handlebars作为模板引擎
+app.engine('hbs',exphbs({
+	//设置模板目录
+	layoutsDir : 'views/hbs',
+	//设置页面布局的layout.html文件
+	defaultLayout : 'layout',
+	//设置页面扩展名
+	extname : '.html'
+}));
+app.set('view engine','hbs');
+
+
 //app.use(express.favicon());
 //app.use([path],function) 用于加载处理http请求的中间件，相当于注册请求的拦截器（函数）
 //这些拦截器是函数，形式为function(req,res,next){...;next();}
