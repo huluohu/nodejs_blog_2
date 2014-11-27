@@ -16,6 +16,5 @@
     "passport-github" : "*",
     "mongoose" : "*",
     "async" : "*",
-    ""
   }
 }
