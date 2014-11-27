@@ -76,9 +76,9 @@ Post.getAll = function(name,callback){
 				if(err){
 					return callback(err);
 				}
-				docs.forEach(function(doc){
-					doc.post = markdown.toHTML(doc.post);
-				});
+//				docs.forEach(function(doc){
+//					doc.post = markdown.toHTML(doc.post);
+//				});
 				callback(null,docs);
 			});
 		});
@@ -120,10 +120,10 @@ Post.getOneInHtml = function(name,day,title,callback){
 							return callback(err);
 						}
 					});
-					doc.post = markdown.toHTML(doc.post);
-					doc.comments.forEach(function(comment){
-						comment.content = markdown.toHTML(comment.content);
-					});
+//					doc.post = markdown.toHTML(doc.post);
+//					doc.comments.forEach(function(comment){
+//						comment.content = markdown.toHTML(comment.content);
+//					});
 					callback(null,doc);
 				}else{
 					mongodb.close();
@@ -286,9 +286,9 @@ Post.getByPaging = function(name,page,callback){
 					if(err){
 						return callback(err);
 					}
-					docs.forEach(function(doc,index){
-						doc.post = markdown.toHTML(doc.post);
-					});
+//					docs.forEach(function(doc,index){
+//						doc.post = markdown.toHTML(doc.post);
+//					});
 					callback(null,docs,total);
 				});
 			});
