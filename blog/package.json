@@ -17,7 +17,6 @@
     "mongoose" : "*",
     "async" : "*",
     "express4-handlebars" : "*",
-    "express3-handlebars" : "*",
     "express-handlebars" : "*"
   }
 }
