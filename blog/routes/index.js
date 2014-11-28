@@ -513,8 +513,6 @@ module.exports = function(app) {
 	
 	app.use(function(req,res){
 		res.render('404',{
-			layout : false
-		},{
 			title : '哎呀，迷路了*__*',
 			user : req.session.user,
 			success : req.flash('success').toString(),
