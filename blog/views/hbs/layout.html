@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Blog</title>
+<link rel="stylesheet" href="/stylesheets/style.css">
+<script type="text/javascript" src="/kindeditor/kindeditor-all-min.js"></script>
+<script type="text/javascript" src="/kindeditor/lang/zh_CN.js"></script>
+<script type="text/javascript" src="/lib/handlebars-v2.0.0.js"></script>
+<script type="text/javascript" src="/lib/handlebars_helper.js"></script>
+<script type="text/javascript" src="/lib/jquery-1.11.1.min.js"></script>
+<script type="text/javascript">
+	var editor;
+	KindEditor.ready(function(K){
+		editor = K.create('textarea[name=post]',{
+			allowImageUpload : false,
+			item : [
+				'fontname','fontsize','|',
+				'forecolor','hilitecolor','bold','italic','underline','removeformat','|',
+				'justifyleft','justifycenter','justifyright','insertorderlist','insertunorderlist','|',
+				'emoticons','image','link'
+			]
+		});
+	});
+</script>
+</head>
+<body>
+	{{#equal  1 1}}
+		<h1>111</h1>
+	{{else}}
+		<h1>222</h1>
+	{{/equal }}
+	<header>
+		<h1>{{title}}</h1>
+	</header>
+	
+	<nav>
+		<span><a title="主页" href="/">home</a></span>
+		<span><a title="归档" href="/archive">archive</a></span>
+		<span><a title="标签" href="/tags">tags</a></span>
+		<span><a title="友情链接" href="/links">links</a></span>
+		{{#if user}}
+		<span><a title="上传" href="/upload">upload</a></span>
+		<span><a title="发表" href="/post">post</a></span>
+		<span><a title="登出" href="/logout">logout
+			({{user.name}})
+		</a></span>
+		{{else}}
+		<span><a title="登录" href="/login">login</a></span>
+		<span><a title="注册" href="/reg">reg</a></span>
+		{{/if}}
+		<span><a title="测试" href="/test">test</a></span>
+		<span>
+			<form action="/search" method="get">
+				<input name="keyword" placeholder="search" class="search">
+			</form>
+		</span>
+	</nav>
+	
+	<article>
+		{{#if success}}
+			<div>{{success}}</div>
+		{{/if}}
+		{{#if error}}
+			<div>{{error}}</div>
+		{{/if}}
+		<!-- 会被具体的页面替换 -->
+		{{{body}}}
+	</article>
+</body>
+</html>

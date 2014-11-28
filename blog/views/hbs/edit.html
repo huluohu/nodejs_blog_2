@@ -1,0 +1,16 @@
+<%- include header.html %>
+<form method="post">
+	<label for="title">标题</label><br/>
+	<input name="title" value="<%= post.title %>" disabled="disabled"><br/>
+	<label >标签</label><br/>
+	<% if(!post.tags){ %>
+		<% post.tags=['','','']; %>
+	<% } %>
+	<input name="tag1" value="<%=post.tags[0] %>" disabled="disabled">
+	<input name="tag2" value="<%=post.tags[1] %>" disabled="disabled">
+	<input name="tag3" value="<%=post.tags[2] %>" disabled="disabled"><br />
+	<label>正文</label><br/>
+	<textarea rows="20" cols="100" name="post"><%= post.post %></textarea><br/>
+	<input type="submit" value="保存修改">
+</form>
+<%- include footer.html %>

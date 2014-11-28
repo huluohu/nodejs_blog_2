@@ -1,0 +1,10 @@
+<%- include header.html %>
+<br />
+<% posts.forEach(function(tag,index){ %>
+	<a class="tag" href="/tags/<%=tag %>"><%=tag %></a>
+	<% if((index+1) % 10 == 0){ %>
+		<br />
+	<% } %>
+<% }) %>
+
+<%- include footer.html %>
