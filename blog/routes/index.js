@@ -49,6 +49,7 @@ module.exports = function(app) {
 				posts = [];
 //				return res.redirect('back');
 			}
+			console.log('/========================='+total);
 			res.render('index', {
 				title : '主页',
 				posts : posts,

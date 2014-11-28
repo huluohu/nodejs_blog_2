@@ -3,17 +3,18 @@
  * 依赖模块
  */
 
-var express = require('express')
-  , routes = require('./routes')
-  , user = require('./routes/user')
-  , test = require('./routes/test')
-  , http = require('http')
-  , path = require('path');
+var express = require('express');
+var routes = require('./routes');
+var test = require('./routes/test');
+var http = require('http');
+var path = require('path');
 
 var MongoStore = require('connect-mongo')(express);
 var settings = require('./settings');
 var flash = require('connect-flash');
 var fs = require('fs');
+var exphbs = require('express-handlebars');
+
 var accessLog = fs.createWriteStream('access.log',{flag : 'a'});
 var errorLog = fs.createWriteStream('error.log',{flag : 'a'});
 
@@ -22,28 +23,29 @@ var app = express();
 var passport = require('passport');
 var GitHubStrategy = require('passport-github').Strategy;
 
-var exphbs = require('express3-handlebars');
+
 
 app.use(flash());
 // all environments
 app.set('port', process.env.PORT || 3000);
+//app.set('views', __dirname + '/views/hbs');
 app.set('views', __dirname + '/views');
 //使用ejs模板，并修改扩展名为html
-//app.engine('.html',require('ejs').renderFile);
-//app.set('view engine', 'html');
+app.engine('.html',require('ejs').renderFile);
+app.set('view engine', 'html');
 
 //app.set('view engine', 'ejs');
 
 //设置handlebars作为模板引擎
-app.engine('hbs',exphbs({
-	//设置模板目录
-	layoutsDir : 'views/hbs',
-	//设置页面布局的layout.html文件
-	defaultLayout : 'layout',
-	//设置页面扩展名
-	extname : '.html'
-}));
-app.set('view engine','hbs');
+//app.engine('html',exphbs({
+//	//设置模板目录
+//	layoutsDir : 'views/hbs',
+//	//设置页面布局的layout.html文件
+//	defaultLayout : 'layout',
+//	//设置页面扩展名
+//	extname : '.html'
+//}));
+//app.set('view engine','html');
 
 
 //app.use(express.favicon());
@@ -87,6 +89,9 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(function(err,req,res,next){
 	var meta = '[' + new Date() + ']' + req.url + '\n';
 	errorLog.write(meta + err.stack + '\n');
+//	var err = new Error('Not Found');
+//    err.status = 404;
+//    next(err);
 	next();
 });
 //设置passport策略
