@@ -138,11 +138,11 @@ module.exports = function(app) {
 		User.get_v2(name, function(err, user) {
 			if (!user) {
 				req.flash('error', '用户不存在');
-				res.redirect('/login');
+				return res.redirect('/login');
 			}
 			if (user.password !== password) {
 				req.flash('error', '密码错误');
-				res.redirect('/login');
+				return res.redirect('/login');
 			}
 			req.session.user = user;
 			req.flash('success', '登陆成功');
